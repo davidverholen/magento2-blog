@@ -52,6 +52,7 @@
         </copy>
         <copy file="test/integration/etc/install-config-mysql.php" todir="build/dev/tests/integration/etc"/>
         <copy file="test/integration/phpunit.xml.dist" tofile="build/dev/tests/integration/phpunit.xml"/>
+        <copy file="test/unit/phpunit.xml.dist" tofile="build/dev/tests/unit/phpunit.xml"/>
     </target>
 
     <target name="test">
