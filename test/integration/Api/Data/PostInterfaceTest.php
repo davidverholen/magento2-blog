@@ -31,17 +31,17 @@ class PostInterfaceTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf(
             PostInterface::class,
-            $this->getObjectManager()
+            $this->getObjectManager()->create(PostInterface::class)
         );
     }
 
     /**
      * getObjectManager
      *
-     * @return mixed
+     * @return ObjectManager
      */
     private function getObjectManager()
     {
-        return ObjectManager::getInstance()->create(PostInterface::class);
+        return ObjectManager::getInstance();
     }
 }

@@ -32,17 +32,17 @@ class PostTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf(
             AbstractExtensibleModel::class,
-            $this->getObjectManager()
+            $this->getObjectManager()->create(Post::class)
         );
     }
 
     /**
      * getObjectManager
      *
-     * @return mixed
+     * @return ObjectManager
      */
     private function getObjectManager()
     {
-        return ObjectManager::getInstance()->create(Post::class);
+        return ObjectManager::getInstance();
     }
 }
