@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<project name="DavidVerholen_blog"
+         default="build"
+         basedir="."
+         description="DavidVerholen_Blog Build">
+
+    <property name="project.builddir" value="${project.basedir}/build"/>
+    <property name="test.db.name" value="magento2_davidverholen_blog_integration_tests"/>
+
+    <target name="build">
+        <phingcall target="prepare"/>
+        <phingcall target="magento.install"/>
+        <phingcall target="test"/>
+    </target>
+
+    <target name="prepare">
+        <phingcall target="clean"/>
+        <mkdir dir="reports/coverage"/>
+        <mkdir dir="reports/tests"/>
+    </target>
+
+    <target name="magento.install">
+        <parallel>
+            <phingcall target="magento.install.db"/>
+            <phingcall target="magento.install.project"/>
+        </parallel>
+    </target>
+
+    <target name="magento.install.project">
+        <composer command="create-project">
+            <arg value="magento/project-community-edition"/>
+            <arg path="${project.builddir}"/>
+        </composer>
+    </target>
+
+    <target name="magento.install.db">
+        <exec executable="/usr/bin/env" passthru="true">
+            <arg value="mysql"/>
+            <arg value="-u"/>
+            <arg value="root"/>
+            <arg value="-e"/>
+            <arg value="DROP DATABASE IF EXISTS ${test.db.name}; CREATE DATABASE ${test.db.name};"/>
+        </exec>
+    </target>
+
+    <target name="test.prepare">
+        <mkdir dir="${project.builddir}/app/code/DavidVerholen/Blog"/>
+        <copy todir="${project.builddir}/app/code/DavidVerholen/Blog" >
+            <fileset dir="./src">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+        <copy file="test/integration/etc/install-config-mysql.php" todir="build/dev/tests/integration/etc"/>
+        <copy file="test/integration/phpunit.xml.dist" tofile="build/dev/tests/integration/phpunit.xml"/>
+    </target>
+
+    <target name="test">
+        <phingcall target="test.prepare"/>
+        <parallel>
+            <phingcall target="test.unit"/>
+            <phingcall target="test.integration"/>
+        </parallel>
+    </target>
+
+    <target name="test.unit">
+        <exec executable="bin/phpunit" passthru="true">
+            <arg value="-c"/>
+            <arg file="test/unit/phpunit.xml.dist"/>
+        </exec>
+    </target>
+
+    <target name="test.integration">
+        <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
+            <arg value="-c"/>
+            <arg file="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        </exec>
+    </target>
+
+    <target name="test.integration.clean">
+        <delete verbose="true" includeemptydirs="true">
+            <fileset dir="${project.builddir}/dev/tests/integration/tmp">
+                <include name="sandbox**/*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean">
+        <delete dir="reports"/>
+        <delete dir="${project.builddir}"/>
+    </target>
+</project>
