@@ -1,8 +1,8 @@
 <?php
 return [
-    'db-host' => 'localhost',
+    'db-host' => '127.0.0.1:33306',
     'db-user' => 'root',
-    'db-password' => '',
+    'db-password' => 'mysql',
     'db-name' => 'magento2_davidverholen_blog_integration_tests',
     'db-prefix' => '',
     'backend-frontname' => 'backend',

@@ -14,42 +14,25 @@
     </target>
 
     <target name="prepare">
-        <phingcall target="clean"/>
+        <delete dir="reports"/>
+        <delete dir="${project.builddir}"/>
         <mkdir dir="reports/coverage"/>
         <mkdir dir="reports/tests"/>
     </target>
 
     <target name="magento.install">
-        <parallel>
-            <phingcall target="magento.install.db"/>
-            <phingcall target="magento.install.project"/>
-        </parallel>
-    </target>
-
-    <target name="magento.install.project">
+        <phingcall target="test.integration.clean"/>
         <composer command="create-project">
             <arg value="magento/project-community-edition"/>
             <arg path="${project.builddir}"/>
         </composer>
     </target>
 
-    <target name="magento.install.db">
-        <exec executable="/usr/bin/env" passthru="true">
-            <arg value="mysql"/>
-            <arg value="-u"/>
-            <arg value="root"/>
-            <arg value="-e"/>
-            <arg value="DROP DATABASE IF EXISTS ${test.db.name}; CREATE DATABASE ${test.db.name};"/>
-        </exec>
-    </target>
-
     <target name="test.prepare">
-        <mkdir dir="${project.builddir}/app/code/DavidVerholen/Blog"/>
-        <copy todir="${project.builddir}/app/code/DavidVerholen/Blog" >
-            <fileset dir="./src">
-                <include name="**/*" />
-            </fileset>
-        </copy>
+        <mkdir dir="${project.builddir}/app/code/DavidVerholen"/>
+        <symlink link="${project.builddir}/app/code/DavidVerholen/Blog"
+                 target="../../../../src"
+                 overwrite="true"/>
         <copy file="test/integration/etc/install-config-mysql.php" todir="build/dev/tests/integration/etc"/>
         <copy file="test/integration/phpunit.xml.dist" tofile="build/dev/tests/integration/phpunit.xml"/>
         <copy file="test/unit/phpunit.xml.dist" tofile="build/dev/tests/unit/phpunit.xml"/>
@@ -80,13 +63,19 @@
     <target name="test.integration.clean">
         <delete verbose="true" includeemptydirs="true">
             <fileset dir="${project.builddir}/dev/tests/integration/tmp">
-                <include name="sandbox**/*" />
+                <include name="sandbox**/*"/>
             </fileset>
         </delete>
-    </target>
-
-    <target name="clean">
-        <delete dir="reports"/>
-        <delete dir="${project.builddir}"/>
+        <exec executable="/usr/bin/env" passthru="true">
+            <arg value="mysql"/>
+            <arg value="-uroot"/>
+            <arg value="-pmysql"/>
+            <arg value="-h"/>
+            <arg value="127.0.0.1"/>
+            <arg value="-P"/>
+            <arg value="33306"/>
+            <arg value="-e"/>
+            <arg value="DROP DATABASE IF EXISTS ${test.db.name}; CREATE DATABASE ${test.db.name};"/>
+        </exec>
     </target>
 </project>

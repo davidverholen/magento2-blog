@@ -19,11 +19,6 @@
             </exclude>
         </whitelist>
     </filter>
-    <logging>
-        <log type="coverage-clover" target="../../reports/coverage/unit.xml"/>
-        <log type="junit" target="../../reports/tests/unit.xml"/>
-    </logging>
-    <!-- PHP INI settings and constants definition -->
     <php>
         <includePath>.</includePath>
         <includePath>testsuite</includePath>
