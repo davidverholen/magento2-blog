@@ -26,6 +26,9 @@
             <arg value="magento/project-community-edition"/>
             <arg path="${project.builddir}"/>
         </composer>
+        <exec command="chmod -R 0777 ${project.builddir}"/>
+        <exec command="chmod +x ${project.builddir}/bin/magento"/>
+        <exec command="${project.builddir}/bin/magento deploy:mode:set developer"/>
     </target>
 
     <target name="test.prepare">

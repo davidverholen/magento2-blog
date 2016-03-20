@@ -1,3 +1,13 @@
+web:
+  build: .
+  dockerfile: Dockerfile
+  ports:
+    - "80:80"
+  links:
+    - mysql
+  volumes:
+    - "./build:/var/www/html"
+
 mysql:
   image: mariadb
   ports:
