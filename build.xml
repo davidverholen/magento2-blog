@@ -44,7 +44,6 @@
             <arg path="${project.builddir}"/>
         </composer>
         <exec command="chmod +x ${project.builddir}/bin/magento"/>
-        <exec command="sudo docker-compose up -d" passthru="true"/>
         <exec command="chmod -R 0777 ${project.builddir}"/>
         <exec command="./waitForMysql.sh" passthru="true"/>
     </target>
