@@ -1,28 +1,32 @@
 sudo: required
 dist: trusty
-
 language: php
 php:
-  - 5.5
-  - 5.6
-  - 7.0
+- 5.5
+- 5.6
+- 7.0
 cache:
   apt: true
   directories:
-    - $HOME/.composer/cache
+  - "$HOME/.composer/cache"
 before_install:
-  - sh ./initTestEnv.sh
-  - sudo apt-get update -qq
-  - composer selfupdate
+- sh ./initTestEnv.sh
+- sudo apt-get update -qq
+- composer selfupdate
 before_script:
-  - sudo apt-get remove -y -qq --purge mysql-common mysql-server-5.5 mysql-server-core-5.5 mysql-client-5.5 mysql-client-core-5.5;
-  - sudo apt-get -y -qq autoremove;
-  - sudo apt-get -y -qq autoclean;
-  - sudo apt-get install -y -qq mysql-server-5.6 mysql-client-5.6;
-  - mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE magento_integration_tests;';
-  - mv dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php;
-  - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - phpenv rehash;
-  - /usr/bin/env php composer.phar install --no-interaction
-script:
-  bin/phing
+- sudo apt-get remove -y -qq --purge mysql-common mysql-server-5.5 mysql-server-core-5.5
+  mysql-client-5.5 mysql-client-core-5.5;
+- sudo apt-get -y -qq autoremove;
+- sudo apt-get -y -qq autoclean;
+- sudo apt-get install -y -qq mysql-server-5.6 mysql-client-5.6;
+- mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE
+  magento_integration_tests;';
+- mv dev/tests/integration/etc/install-config-mysql.travis.php.dist dev/tests/integration/etc/install-config-mysql.php;
+- echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+- phpenv rehash;
+- echo AUTH_JSON > ~/.composer/auth.json
+- "/usr/bin/env php composer.phar install --no-interaction"
+script: bin/phing
+env:
+  global:
+    secure: p5bBe94sfhKR39PKyzsfokJSYFhqCMLlquVOQBATAw9MXCRyCYG2xVDwlRAxncOI82O0Zp8H4EQSp9DXpYoY4uHcH0DwsZg0pf48To8nSGUQ1yWH0feLhsVJlDwnaHYNsFz6pkbuFk4Rs6KfSGgr+DBx7l81bW7M8SZF6NX60eWSzqrQbWrV2cC7oMHC4Xafwpg3Zapuk2BWx7Iejv+OeX8Mon2uvLqyvfEBlVnbdai9qC2/AzeYSAFPsNb4qlcPB0h8zyMRRvvemZV+LVilEoANhjzRjWY4AXOgVEndxJMYqsSzkHFggU8u3Mzp5M56WlLVP/OuouiC4rkXLwL1SGJp5MEIc3SABQiQDF5pSW4cLaVam6D38fR1ttRwx/EFOoOcTYujrYIJddCTspWEWqK4iikkT4KVma6RCEdDC2XlwsuBQ4YnyqK3O8spEnD8znfd/8MJDwDbCnPftC3ID5mP5ZFZFUeGYPWaeZ59O34j0d1O7pXQ27Dutx4CAZ8D4fj1VPkq0hLAzv62qa/a1Ywp7l272ybIlyYJ3x6qTYYpYmlpu+AFrTmUCXYMmjEQIAAgGN7/k2PntZMyFBERl3P7dePSsjkyfBtJxJ/zqKBVRz5oFznRrGl3/zFLSI+TPUC/PJq9kHtclOzOViBjkMu3+4ArhkJpQ5rC8KEmdwg=
