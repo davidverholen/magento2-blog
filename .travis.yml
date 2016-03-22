@@ -19,9 +19,9 @@ before_script:
 - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 - phpenv rehash;
 - bin/phing build
-- bin/phing test.prepare
 script:
 - bin/phing test.run.integration
+- bin/phing test.run.functional
 - bin/phing test.run.spec
 - bin/phing test.run.unit
 env:
