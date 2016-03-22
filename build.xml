@@ -6,8 +6,9 @@
 
     <property name="project.builddir" value="${project.basedir}/build"/>
 
-    <target name="test-all" depends="build,test.prepare,test.unit,test.integration"/>
+    <target name="test-all" depends="build,test.prepare,test.spec,test.unit,test.integration"/>
     <target name="unit-tests" depends="build,test.prepare,test.unit"/>
+    <target name="spec-tests" depends="build,test.prepare,test.spec"/>
     <target name="integration-tests" depends="build,test.prepare,test.integration"/>
 
     <target name="test.unit">
@@ -21,6 +22,12 @@
         <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
             <arg file="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        </exec>
+    </target>
+
+    <target name="test.spec">
+        <exec executable="bin/phpspec" passthru="true">
+            <arg value="run"/>
         </exec>
     </target>
 
