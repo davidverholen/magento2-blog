@@ -1,58 +1,20 @@
 <?xml version="1.0"?>
 <project name="DavidVerholen_blog"
-         default="build"
+         default="test-all"
          basedir="."
          description="DavidVerholen_Blog Build">
 
     <property name="project.builddir" value="${project.basedir}/build"/>
-    <property name="test.db.name" value="magento2_davidverholen_blog_integration_tests"/>
 
-    <target name="build">
-        <phingcall target="prepare"/>
-        <phingcall target="magento.install"/>
-        <phingcall target="test"/>
-    </target>
-
-    <target name="prepare">
-        <delete dir="reports"/>
-        <delete dir="${project.builddir}"/>
-        <mkdir dir="reports/coverage"/>
-        <mkdir dir="reports/tests"/>
-    </target>
-
-    <target name="magento.install">
-        <phingcall target="test.integration.clean"/>
-        <composer command="create-project">
-            <arg value="magento/project-community-edition"/>
-            <arg path="${project.builddir}"/>
-        </composer>
-        <exec command="chmod -R 0777 ${project.builddir}"/>
-        <exec command="chmod +x ${project.builddir}/bin/magento"/>
-        <exec command="${project.builddir}/bin/magento deploy:mode:set developer"/>
-    </target>
-
-    <target name="test.prepare">
-        <mkdir dir="${project.builddir}/app/code/DavidVerholen"/>
-        <symlink link="${project.builddir}/app/code/DavidVerholen/Blog"
-                 target="../../../../src"
-                 overwrite="true"/>
-        <copy file="test/integration/etc/install-config-mysql.php" todir="build/dev/tests/integration/etc"/>
-        <copy file="test/integration/phpunit.xml.dist" tofile="build/dev/tests/integration/phpunit.xml"/>
-        <copy file="test/unit/phpunit.xml.dist" tofile="build/dev/tests/unit/phpunit.xml"/>
-    </target>
-
-    <target name="test">
-        <phingcall target="test.prepare"/>
-        <parallel>
-            <phingcall target="test.unit"/>
-            <phingcall target="test.integration"/>
-        </parallel>
-    </target>
+    <target name="test-all" depends="build,test.prepare,test.spec,test.unit,test.integration"/>
+    <target name="unit-tests" depends="build,test.prepare,test.unit"/>
+    <target name="spec-tests" depends="build,test.prepare,test.spec"/>
+    <target name="integration-tests" depends="build,test.prepare,test.integration"/>
 
     <target name="test.unit">
-        <exec executable="bin/phpunit" passthru="true">
+        <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
-            <arg file="test/unit/phpunit.xml.dist"/>
+            <arg file="${project.builddir}/dev/tests/unit/phpunit.xml"/>
         </exec>
     </target>
 
@@ -63,22 +25,37 @@
         </exec>
     </target>
 
-    <target name="test.integration.clean">
-        <delete verbose="true" includeemptydirs="true">
-            <fileset dir="${project.builddir}/dev/tests/integration/tmp">
-                <include name="sandbox**/*"/>
-            </fileset>
-        </delete>
-        <exec executable="/usr/bin/env" passthru="true">
-            <arg value="mysql"/>
-            <arg value="-uroot"/>
-            <arg value="-pmysql"/>
-            <arg value="-h"/>
-            <arg value="127.0.0.1"/>
-            <arg value="-P"/>
-            <arg value="33306"/>
-            <arg value="-e"/>
-            <arg value="DROP DATABASE IF EXISTS ${test.db.name}; CREATE DATABASE ${test.db.name};"/>
+    <target name="test.spec">
+        <exec executable="bin/phpspec" passthru="true">
+            <arg value="run"/>
         </exec>
+    </target>
+
+    <target name="clean">
+        <delete dir="reports"/>
+        <delete dir="${project.builddir}"/>
+        <mkdir dir="reports/coverage"/>
+        <mkdir dir="reports/tests"/>
+    </target>
+
+    <target name="build" depends="clean">
+        <composer command="create-project">
+            <arg value="magento/project-community-edition"/>
+            <arg path="${project.builddir}"/>
+        </composer>
+        <exec command="chmod +x ${project.builddir}/bin/magento"/>
+        <exec command="sudo docker-compose up -d" passthru="true"/>
+        <exec command="chmod -R 0777 ${project.builddir}"/>
+        <exec command="./waitForMysql.sh" passthru="true"/>
+    </target>
+
+    <target name="test.prepare">
+        <mkdir dir="${project.builddir}/app/code/DavidVerholen"/>
+        <symlink link="${project.builddir}/app/code/DavidVerholen/Blog"
+                 target="../../../../src"
+                 overwrite="true"/>
+        <copy file="test/integration/etc/install-config-mysql.php" todir="${project.builddir}/dev/tests/integration/etc"/>
+        <copy file="test/integration/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        <copy file="test/unit/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/unit/phpunit.xml"/>
     </target>
 </project>
