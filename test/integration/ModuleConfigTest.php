@@ -14,9 +14,9 @@
 namespace DavidVerholen\Blog\Test\Integration;
 
 use DavidVerholen\Blog\Module;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Module\ModuleList;
+use Magento\TestFramework\ObjectManager;
 
 /**
  * Class ModuleConfigTest

@@ -14,7 +14,7 @@
 namespace DavidVerholen\Blog\Test\Integration\Api\Data;
 
 use DavidVerholen\Blog\Api\Data\PostInterface;
-use Magento\Framework\App\ObjectManager;
+use Magento\TestFramework\ObjectManager;
 
 /**
  * Class PostInterfaceTest

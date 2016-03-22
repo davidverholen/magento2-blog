@@ -14,8 +14,8 @@
 namespace DavidVerholen\Blog\Test\Integration\Model;
 
 use DavidVerholen\Blog\Model\Post;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\TestFramework\ObjectManager;
 
 /**
  * Class PostTest
