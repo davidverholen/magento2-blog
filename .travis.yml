@@ -15,15 +15,6 @@ before_install:
 - sudo apt-get update -qq
 - composer selfupdate
 before_script:
-- sudo apt-get remove -y -qq --purge mysql-common mysql-server-5.5 mysql-server-core-5.5
-  mysql-client-5.5 mysql-client-core-5.5;
-- sudo apt-get -y -qq autoremove;
-- sudo apt-get -y -qq autoclean;
-- sudo apt-get install -y -qq mysql-server-5.6 mysql-client-5.6;
-- mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE
-  magento_integration_tests;';
-- echo "USE mysql;\nUPDATE user SET password=PASSWORD('mysql') WHERE user='root';\nFLUSH
-  PRIVILEGES;\n" | mysql -u root
 - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 - phpenv rehash;
 - "/usr/bin/env php composer.phar install --no-interaction"
