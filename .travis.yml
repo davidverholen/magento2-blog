@@ -8,14 +8,19 @@ php:
 cache:
   apt: true
   directories:
-  - "$HOME/.composer/cache"
+  - "~/.composer/cache"
 before_install:
 - echo \{\"http-basic\":\{\"repo.magento.com\":\{\"username\":\"${REPO_MAGENTO_PUBLIC}\",\"password\":\"${REPO_MAGENTO_PRIVATE}\"\}\},\"github-oauth\":\{\"github.com\":\"${GITHUB_TOKEN}\"\}\} > ~/.composer/auth.json
 - sh bin/initTestEnv.sh
 before_script:
 - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 - phpenv rehash;
-script: bin/phing
+- bin/phing build
+- bin/phing test.prepare
+script:
+- bin/phing test.run.integration
+- bin/phing test.run.spec
+- bin/phing test.run.unit
 env:
   global:
   - secure: XPJzAigNAhV/EcjErTj3pHvSZZEOZR4fDgm+PKWyIN5GHthtDV6a5ayq5Et4sv29POj6DZ1WHUqZI/E74bhgFjvq5dD8r83lCzUQPvQWtK5+UtcOC8+SuvzK66LMi6QqBokhpiptBJeCZCGLD7vQNA5vCcA1su/UbBMu7pSoKAGkUrwW0lSd7rxyeeupk5tn6yEfdCBfBLjr4oMzhbjqxEeE6EGPdp0kiqS3gIKExnbHXCONc9jZ159go8O5k2ZO3HWRCTqidChkBQLk1BQfMpmouVdC7BJHNrS4hoa1hbD8N/JARRDXywy4ZuDBd0vRMmDFDNb/ZAPlj0lb42YjEr9lEzvYlN3NWI1ftTZI30hZZzV9O9+ju5nFXeWoZzaOjY6Uyywk/zQQmEcq8S6JcgFd2POvUM/nBw0FbrqDKtTiezSca5IGSewQoEWhWnTTp8N0XzmvX2MOxmZr0kExq8pjrS1WkjoGh9I//LJ4xD053+IEP72ABqQscy6RqPoGulOf8boibNuWTsfRn+QvszoJaGJnzGyUqwoO404kJtfqFqSxeMucNmNPN0w31dOopo1OoO35kvxrjF5/poVPWZasQYfJ5GmLsHXQhTwGTdN1sk/I7193sAVb8BzyB9b6IwbK2ZagSATsyGt8OEzmHWvtsO+UnP4ZPssdTcnK1lM=
