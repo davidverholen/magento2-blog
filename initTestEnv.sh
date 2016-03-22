@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
-curl https://getcomposer.org/composer.phar > composer.phar
-/usr/bin/env php composer.phar install --no-interaction --optimize-autoloader
+if [ ! -f composer.phar ]; then
+    curl https://getcomposer.org/composer.phar > composer.phar
+fi
+/usr/bin/env php composer.phar update --no-interaction --optimize-autoloader
+sudo docker-compose up -d
