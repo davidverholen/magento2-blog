@@ -13,7 +13,17 @@ mysql:
   ports:
     - "3306:3306"
   volumes:
-    - "./test/integration/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
+    - "./test/integration/initdb.sql:/docker-entrypoint-initdb.d/initdb-integration.sql"
+    - "./test/functional/initdb.sql:/docker-entrypoint-initdb.d/initdb-functional.sql"
   environment:
     MYSQL_ROOT_PASSWORD: mysql
+
+selenium_hub:
+  image: selenium/hub
+  ports:
+    - "4444:4444"
+selenium_chrome:
+  image: selenium/node-chrome
+  links:
+    - selenium_hub
 

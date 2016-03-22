@@ -41,7 +41,9 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "DavidVerholen\\Blog\\Test\\Integration\\": "test/integration"
+      "DavidVerholen\\Blog\\Test\\Integration\\": "test/integration",
+      "DavidVerholen\\Blog\\Test\\Unit\\": "test/unit",
+      "DavidVerholen\\Blog\\Test\\Functional\\": "test/functional"
     }
   }
 }

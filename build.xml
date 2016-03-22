@@ -16,14 +16,19 @@
 
     <property name="test.integration.phpunit" value="${project.basedir}/test/integration/phpunit.xml.dist"/>
     <property name="test.integration.mysql-config" value="${project.basedir}/test/integration/etc/install-config-mysql.php"/>
+
     <property name="test.unit.phpunit" value="${project.basedir}/test/unit/phpunit.xml.dist"/>
 
-    <target name="build-test-all" depends="build,test.prepare,test.run.spec,test.run.unit,test.run.integration"/>
-    <target name="build-test-unit" depends="build,test.prepare,test.run.unit"/>
-    <target name="build-test-spec" depends="build,test.prepare,test.run.spec"/>
-    <target name="build-test-integration" depends="build,test.prepare,test.run.integration"/>
+    <property name="test.functional.phpunit" value="${project.basedir}/test/functional/phpunit.xml.dist"/>
+    <property name="test.functional.config" value="${project.basedir}/test/functional/etc/config.xml"/>
+
+    <target name="build-test-all" depends="build,test.run.spec,test.run.unit,test.run.integration"/>
+    <target name="build-test-unit" depends="build,test.run.unit"/>
+    <target name="build-test-spec" depends="build,test.run.spec"/>
+    <target name="build-test-integration" depends="build,test.run.integration"/>
 
     <target name="test.run.unit">
+        <phingcall target="test.prepare.unit"/>
         <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
             <arg file="${project.builddir}/dev/tests/unit/phpunit.xml"/>
@@ -31,9 +36,18 @@
     </target>
 
     <target name="test.run.integration">
+        <phingcall target="test.prepare.integration"/>
         <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
             <arg file="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        </exec>
+    </target>
+
+    <target name="test.run.functional">
+        <phingcall target="test.prepare.functional"/>
+        <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
+            <arg value="-c"/>
+            <arg file="${project.builddir}/dev/tests/functional/phpunit.xml"/>
         </exec>
     </target>
 
@@ -61,15 +75,29 @@
             <arg value="${db.host}"/>
             <arg value="${db.port}"/>
         </exec>
-    </target>
-
-    <target name="test.prepare">
         <mkdir dir="${project.builddir}/app/code/${module.vendor}"/>
         <symlink link="${project.builddir}/app/code/${module.vendor}/${module.name}"
                  target="../../../../${module.srcDir}"
                  overwrite="true"/>
+    </target>
+
+    <target name="test.prepare.integration">
         <copy file="${test.integration.mysql-config}" todir="${project.builddir}/dev/tests/integration/etc"/>
         <copy file="${test.integration.phpunit}" tofile="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+    </target>
+
+    <target name="test.prepare.functional">
+        <exec executable="php" passthru="true">
+            <arg value="${project.basedir}/composer.phar"/>
+            <arg value="update"/>
+            <arg value="--working-dir=${project.builddir}/dev/tests/functional"/>
+            <arg value="--no-interaction"/>
+        </exec>
+        <copy file="${test.functional.config}" todir="${project.builddir}/dev/tests/functional/etc"/>
+        <copy file="${test.functional.phpunit}" tofile="${project.builddir}/dev/tests/functional/phpunit.xml"/>
+    </target>
+
+    <target name="test.prepare.unit">
         <copy file="${test.unit.phpunit}" tofile="${project.builddir}/dev/tests/unit/phpunit.xml"/>
     </target>
 </project>
