@@ -5,6 +5,18 @@
          description="DavidVerholen_Blog Build">
 
     <property name="project.builddir" value="${project.basedir}/build"/>
+    <property name="project.bindir" value="${project.basedir}/bin"/>
+
+    <property name="db.host" value="127.0.0.1"/>
+    <property name="db.port" value="3306"/>
+
+    <property name="module.vendor" value="DavidVerholen"/>
+    <property name="module.name" value="Blog"/>
+    <property name="module.srcDir" value="src"/>
+
+    <property name="test.integration.phpunit" value="${project.basedir}/test/integration/phpunit.xml.dist"/>
+    <property name="test.integration.mysql-config" value="${project.basedir}/test/integration/etc/install-config-mysql.php"/>
+    <property name="test.unit.phpunit" value="${project.basedir}/test/unit/phpunit.xml.dist"/>
 
     <target name="build-test-all" depends="build,test.prepare,test.run.spec,test.run.unit,test.run.integration"/>
     <target name="build-test-unit" depends="build,test.prepare,test.run.unit"/>
@@ -45,16 +57,19 @@
         </composer>
         <exec command="chmod +x ${project.builddir}/bin/magento"/>
         <exec command="chmod -R 0777 ${project.builddir}"/>
-        <exec command="./waitForMysql.sh" passthru="true"/>
+        <exec executable="${project.bindir}/waitForMysql.sh" passthru="true">
+            <arg value="${db.host}"/>
+            <arg value="${db.port}"/>
+        </exec>
     </target>
 
     <target name="test.prepare">
-        <mkdir dir="${project.builddir}/app/code/DavidVerholen"/>
-        <symlink link="${project.builddir}/app/code/DavidVerholen/Blog"
-                 target="../../../../src"
+        <mkdir dir="${project.builddir}/app/code/${module.vendor}"/>
+        <symlink link="${project.builddir}/app/code/${module.vendor}/${module.name}"
+                 target="../../../../${module.srcDir}"
                  overwrite="true"/>
-        <copy file="test/integration/etc/install-config-mysql.php" todir="${project.builddir}/dev/tests/integration/etc"/>
-        <copy file="test/integration/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/integration/phpunit.xml"/>
-        <copy file="test/unit/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/unit/phpunit.xml"/>
+        <copy file="${test.integration.mysql-config}" todir="${project.builddir}/dev/tests/integration/etc"/>
+        <copy file="${test.integration.phpunit}" tofile="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        <copy file="${test.unit.phpunit}" tofile="${project.builddir}/dev/tests/unit/phpunit.xml"/>
     </target>
 </project>

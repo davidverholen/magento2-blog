@@ -1,5 +1,7 @@
 /vendor
-/bin
+/bin/*
+!/bin/waitForMysql.sh
+!/bin/initTestEnv.sh
 /composer.lock
 /composer.phar
 /.idea

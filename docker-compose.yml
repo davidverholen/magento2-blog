@@ -1,14 +1,14 @@
-#web:
-#  build: .
-#  dockerfile: Dockerfile
-#  ports:
-#    - "80:80"
-#  links:
-#    - mysql
-#  volumes:
-#    - "./build:/var/www/html"
+web:
+  build: .
+  dockerfile: Dockerfile
+  ports:
+    - "80:80"
+  links:
+    - mysql
+  volumes:
+    - "./build:/var/www/html"
 
-mysql-integration-tests:
+mysql:
   image: mariadb
   ports:
     - "3306:3306"
@@ -16,12 +16,4 @@ mysql-integration-tests:
     - "./test/integration/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql"
   environment:
     MYSQL_ROOT_PASSWORD: mysql
-    MYSQL_DATABASE: magento2_integration_tests
 
-#mysql:
-#  image: mariadb
-#  ports:
-#    - "33306:3306"
-#  environment:
-#    MYSQL_ROOT_PASSWORD: mysql
-#    MYSQL_DATABASE: magento2
