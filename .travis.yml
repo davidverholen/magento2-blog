@@ -10,7 +10,7 @@ cache:
   directories:
   - "$HOME/.composer/cache"
 before_install:
-- echo AUTH_JSON > ~/.composer/auth.json
+- echo {\"http-basic\":{\"repo.magento.com\":{\"username\":\"${REPO_MAGENTO_PUBLIC}\",\"password\":\"${REPO_MAGENTO_PRIVATE}\"}},\"github-oauth\":{\"github.com\":\"${GITHUB_TOKEN}\"}} > ~/.composer/auth.json
 - sh ./initTestEnv.sh
 - sudo apt-get update -qq
 - composer selfupdate
@@ -20,12 +20,16 @@ before_script:
 - sudo apt-get -y -qq autoremove;
 - sudo apt-get -y -qq autoclean;
 - sudo apt-get install -y -qq mysql-server-5.6 mysql-client-5.6;
-- mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE magento_integration_tests;';
-- echo "USE mysql;\nUPDATE user SET password=PASSWORD('mysql') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+- mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; CREATE DATABASE
+  magento_integration_tests;';
+- echo "USE mysql;\nUPDATE user SET password=PASSWORD('mysql') WHERE user='root';\nFLUSH
+  PRIVILEGES;\n" | mysql -u root
 - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 - phpenv rehash;
 - "/usr/bin/env php composer.phar install --no-interaction"
 script: bin/phing
 env:
   global:
-  - secure: bB0WZ7WmQ4ULUYGfGhstgWlW66eNoX9XHUNv6vQvprp9ywF+4I77obEUBiLYTEFT547oN1NV7s5h4wv1/eoOnQdXYLxa577lw4QVTuAa9LTKLFYWaE6zKWpHJ8XtNo6iAchBo7g6/mvw/6NEwbW9ziqf+J65QcUnEFIGB/ms/Au/ggW/6nf/J72Jl6JHF/qEEVH0Cfa+15oS8Iv/74+Zz5mcHi85hh03ah6a/7G5gJ2lm/wnUAf7TttSxO+fjhkZ0i6l2QH1Cu18wvzlyNEN9ONSAx1UZFwItMWfjMT54YFS3968znuCK6w6l7JzRqhgYFrjMhchBqOCal57AwwCNbo8QjZT+E1i4BXONU03ep/mMGBWJy4dWcVgIP+sz9MMN3lMofwIzMT1gV7IT+5+5YivAJnRBy3Pe1xjLuKdfgq7DVcDEpNel8t8ZLXMR8lDS6pJKlOsT74kiB9X36/XPg7Dpj2UdVS3zgRhH2Me4mCABrw/jO/JJKpSbBPA1b+3EP5Eq0udBGF/yyY8yQ12eeLm3KQudANCLZ+GHNJbuUW/CME9Ef88fFQBxLu838ThvXvXOeAkTW15rawvsH92VcZoiJ7zC1qsNmrTipFt+0576g53jWlWzVDmUQ9tdmB1kpZ43i3dPFJeQLCG2PE2iGIQZsJiTcZNl0UHzplskfk=
+  - secure: XPJzAigNAhV/EcjErTj3pHvSZZEOZR4fDgm+PKWyIN5GHthtDV6a5ayq5Et4sv29POj6DZ1WHUqZI/E74bhgFjvq5dD8r83lCzUQPvQWtK5+UtcOC8+SuvzK66LMi6QqBokhpiptBJeCZCGLD7vQNA5vCcA1su/UbBMu7pSoKAGkUrwW0lSd7rxyeeupk5tn6yEfdCBfBLjr4oMzhbjqxEeE6EGPdp0kiqS3gIKExnbHXCONc9jZ159go8O5k2ZO3HWRCTqidChkBQLk1BQfMpmouVdC7BJHNrS4hoa1hbD8N/JARRDXywy4ZuDBd0vRMmDFDNb/ZAPlj0lb42YjEr9lEzvYlN3NWI1ftTZI30hZZzV9O9+ju5nFXeWoZzaOjY6Uyywk/zQQmEcq8S6JcgFd2POvUM/nBw0FbrqDKtTiezSca5IGSewQoEWhWnTTp8N0XzmvX2MOxmZr0kExq8pjrS1WkjoGh9I//LJ4xD053+IEP72ABqQscy6RqPoGulOf8boibNuWTsfRn+QvszoJaGJnzGyUqwoO404kJtfqFqSxeMucNmNPN0w31dOopo1OoO35kvxrjF5/poVPWZasQYfJ5GmLsHXQhTwGTdN1sk/I7193sAVb8BzyB9b6IwbK2ZagSATsyGt8OEzmHWvtsO+UnP4ZPssdTcnK1lM=
+  - secure: PTlb2UcUu3DJZtY9HscDc6qmOkWr4686JJ4IVSJfXSsoYYVIqRoNSWwDOXgwYCFlzw3Ee0xKBbMX9yk45gqM30ap/SK27qzrLMfXBh7E5vCRSMgKoK4SMGtWDrynF8z8nlafMVDYINqUukFhm085zJunFVhV4hrfo9m5qvCDgUbJavUyZ4KKmWEGHVmL+GwTLl3JNWpdf4+OnsR+iHmV4NbPUD52wkaRj0T0jZT+KxlmNUHdvbbmRgmgx3K0EsYC5MvBCjcNRFyE/FkRX0f01cwxdpnSHxx5qKt0RWY63njiGTxz20e48m38jLF8pMvc68f5uA6JlEz/YxVaB37G3u/wbQCDFbGCK8UPLh+IwxKaqEoPOeDT9PHBjqtC6ONfMK1bFeLVkifhl9ZqtqbHhn/zdbFY1ECLjhmyzwt7rK5fvKZiSjF7leuaHMI/KOP/CU26azP3HYUA0GCghXOXz2SHNGDfQPGxXRE4AH3Z1DN+mYeh1Ajw+df9tv1KsVeMwqs4mGR51mKvqusZCv6ccpZ4in2R/J0G/tsf44riqGkJeF0qb1akFFg4C16WvIDuCxie4ND4pi9YRxVCZ7KR19SWc00sLzNLbvglwcXZaj/QKTczLZKwZwRYoc+qESgp4017qnQ5R+4X+VZlkDaHRmd3cU7gGbqEQ14jRqJCHzA=
+  - secure: Ffj/hFQxX+5KAcCixA4vlCW6vxjD88UzK0YpGS/6PfYCXglis1hrB8q9YVSU7exkZVVeT8YfRPjPX/tCvGZr1zP7rgJNSTGEMg6algyDtyxW1n0qOUw6zTAyUattX+riJ8p2nmC/WA4w+YpVflEvFEYg6SYIQTBs6XKe7KQzdX+833tiWy9ozRdp8/RaLZrWInI42bdZLzOwayG00I6U5Uo9aQG+pHcb96SeVJ6yQfHTrOzCRpLJ0qMXhRf7wfTUwXyxcbmdr2/A3i6Dxd/hFMI7cU+SBpQBYTljrGGsVq1Z8kDmBV5lwN9bwRVYn3SV34RFqcJkd3Gs1mJV0fZSiD7mQmFJbBg1netCc4UbQnkmLWFjC3sNViQg/NsWWn2XBJTqNcNN3EHv8PDXOuyjp8xntGK1CqXtqfo4zOmDksLnkRiEgKshetkg6xjMs3wvWCyIqHtKkINjcVwUH8bxCDc4il+1HpCPmKqVJfB8ijkXVHrqASwVv1dhEagoT2maW6AbLvc+LpHLE7cS6knkpjfi2BLUS3yeNDmqI9dcbVrAsKkGaRaZqJP9r/FlTkAOlpwPmRkTl1lUoXFhdTq+ILJ56nPw2iKAlOpvOdGl3TbSRRDkz8AzvwWetSmE7ciNUDKdmC7rqwnddGkDIqnt8R/iJ4sN1RhoTQT9MwTA/pA=
