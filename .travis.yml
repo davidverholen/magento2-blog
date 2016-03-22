@@ -10,7 +10,7 @@ cache:
   directories:
   - "$HOME/.composer/cache"
 before_install:
-- echo \{\"http-basic\":\{\"repo.magento.com\":\{\"username\":\"${REPO_MAGENTO_PUBLIC}\",\"password\":\"${REPO_MAGENTO_PRIVATE}\"\}\},\"github-oauth\":\{\"github.com\":\"${GITHUB_TOKEN}\"\}\}
+- echo \{\"http-basic\":\{\"repo.magento.com\":\{\"username\":\"${REPO_MAGENTO_PUBLIC}\",\"password\":\"${REPO_MAGENTO_PRIVATE}\"\}\},\"github-oauth\":\{\"github.com\":\"${GITHUB_TOKEN}\"\}\} > ~/.composer/auth.json
 - sh ./initTestEnv.sh
 - sudo apt-get update -qq
 - composer selfupdate
