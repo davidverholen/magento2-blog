@@ -36,9 +36,9 @@
         <symlink link="${project.builddir}/app/code/DavidVerholen/Blog"
                  target="../../../../src"
                  overwrite="true"/>
-        <copy file="test/integration/etc/install-config-mysql.php" todir="build/dev/tests/integration/etc"/>
-        <copy file="test/integration/phpunit.xml.dist" tofile="build/dev/tests/integration/phpunit.xml"/>
-        <copy file="test/unit/phpunit.xml.dist" tofile="build/dev/tests/unit/phpunit.xml"/>
+        <copy file="test/integration/etc/install-config-mysql.php" todir="${project.builddir}/dev/tests/integration/etc"/>
+        <copy file="test/integration/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/integration/phpunit.xml"/>
+        <copy file="test/unit/phpunit.xml.dist" tofile="${project.builddir}/dev/tests/unit/phpunit.xml"/>
     </target>
 
     <target name="test">
@@ -52,7 +52,7 @@
     <target name="test.unit">
         <exec executable="bin/phpunit" passthru="true">
             <arg value="-c"/>
-            <arg file="test/unit/phpunit.xml.dist"/>
+            <arg file="${project.builddir}/dev/tests/unit/phpunit.xml"/>
         </exec>
     </target>
 
