@@ -1,31 +1,31 @@
 <?xml version="1.0"?>
 <project name="DavidVerholen_blog"
-         default="test-all"
+         default="build-test-all"
          basedir="."
          description="DavidVerholen_Blog Build">
 
     <property name="project.builddir" value="${project.basedir}/build"/>
 
-    <target name="test-all" depends="build,test.prepare,test.spec,test.unit,test.integration"/>
-    <target name="unit-tests" depends="build,test.prepare,test.unit"/>
-    <target name="spec-tests" depends="build,test.prepare,test.spec"/>
-    <target name="integration-tests" depends="build,test.prepare,test.integration"/>
+    <target name="build-test-all" depends="build,test.prepare,test.run.spec,test.run.unit,test.run.integration"/>
+    <target name="build-test-unit" depends="build,test.prepare,test.run.unit"/>
+    <target name="build-test-spec" depends="build,test.prepare,test.run.spec"/>
+    <target name="build-test-integration" depends="build,test.prepare,test.run.integration"/>
 
-    <target name="test.unit">
+    <target name="test.run.unit">
         <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
             <arg file="${project.builddir}/dev/tests/unit/phpunit.xml"/>
         </exec>
     </target>
 
-    <target name="test.integration">
+    <target name="test.run.integration">
         <exec executable="${project.builddir}/vendor/bin/phpunit" passthru="true">
             <arg value="-c"/>
             <arg file="${project.builddir}/dev/tests/integration/phpunit.xml"/>
         </exec>
     </target>
 
-    <target name="test.spec">
+    <target name="test.run.spec">
         <exec executable="bin/phpspec" passthru="true">
             <arg value="run"/>
         </exec>
