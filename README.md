@@ -1,1 +1,3 @@
+[![Build Status](https://travis-ci.org/davidverholen/magento2-blog.svg?branch=master)](https://travis-ci.org/davidverholen/magento2-blog)
+
 in the beginning (at least) this is only for testing the testing ...
