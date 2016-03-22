@@ -12,12 +12,9 @@ cache:
 before_install:
 - echo \{\"http-basic\":\{\"repo.magento.com\":\{\"username\":\"${REPO_MAGENTO_PUBLIC}\",\"password\":\"${REPO_MAGENTO_PRIVATE}\"\}\},\"github-oauth\":\{\"github.com\":\"${GITHUB_TOKEN}\"\}\} > ~/.composer/auth.json
 - sh ./initTestEnv.sh
-- sudo apt-get update -qq
-- composer selfupdate
 before_script:
 - echo 'memory_limit = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 - phpenv rehash;
-- "/usr/bin/env php composer.phar install --no-interaction"
 script: bin/phing
 env:
   global:
