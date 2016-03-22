@@ -25,7 +25,6 @@
     </target>
 
     <target name="clean">
-        <exec command="sudo docker-compose down" passthru="true"/>
         <delete dir="reports"/>
         <delete dir="${project.builddir}"/>
         <mkdir dir="reports/coverage"/>
